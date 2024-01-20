@@ -21,11 +21,14 @@ class Report:
         self.prob_df = prob_df
         self.threshold = threshold
         detected_df = prob_df.applymap(lambda x: x >= self.threshold)
-        flat_result = detected_df.stack().values.tolist()
+        flat_result = [not res for res in detected_df.stack().values.tolist()]
         ground_truth = groundtruth_df.stack().values.tolist()
         self.report = pd.DataFrame(
             classification_report(ground_truth, flat_result, output_dict=True, zero_division=0)
         ).transpose()
+
+        print(ground_truth)
+        print(flat_result)
         self.matrix = pd.DataFrame(
             confusion_matrix(ground_truth, flat_result, labels=[True, False]),
             columns=["True", "False"],
