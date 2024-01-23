@@ -27,8 +27,6 @@ class Report:
             classification_report(ground_truth, flat_result, output_dict=True, zero_division=0)
         ).transpose()
 
-        print(ground_truth)
-        print(flat_result)
         self.matrix = pd.DataFrame(
             confusion_matrix(ground_truth, flat_result, labels=[True, False]),
             columns=["True", "False"],
