@@ -4,3 +4,5 @@ lightning_logs
 result
 xai
 cc.en.300.bin
+__pycache__/
+checkpoints
