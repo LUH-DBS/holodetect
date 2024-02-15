@@ -257,26 +257,23 @@ class HoloDetector(BaseDetector):
     def detect(self, dataset: pd.DataFrame, training_data: pd.DataFrame):
         result_df = dataset['raw'].copy()
         for column in dataset['raw'].columns:
-            cleaned_values = dataset['clean'][column].values.tolist()
             values = dataset['raw'][column].values.tolist()
-            if values == cleaned_values:
-                result_df[column] = pd.Series([1.0 for _ in range(len(dataset['raw']))])
-            else:
-                row_values = [
-                    RowBasedValue(value, row_dict, column)
-                    for value, row_dict in zip(values, dataset['raw'].to_dict("records"))
-                ]
-                training_cleaned_values = [
-                    RowBasedValue(value, row_dict, column)
-                    for value, row_dict in zip(training_data['clean'][column].values.tolist(), training_data['clean'].to_dict("records"))
-                ]
-                training_values = [
-                    RowBasedValue(value, row_dict, column)
-                    for value, row_dict in zip(training_data['raw'][column].values.tolist(), training_data['raw'].to_dict("records"))
-                ]
-                # Data Augmentation
-                temp_training_row_values = copy.deepcopy(row_values)
-                data, labels = self.generator.fit_transform(list(zip(training_cleaned_values, training_values)), temp_training_row_values)
-                outliers = self.detect_values(row_values, data, labels, training_data['constraints'])
-                result_df[column] = pd.Series(outliers)
+
+            row_values = [
+                RowBasedValue(value, row_dict, column)
+                for value, row_dict in zip(values, dataset['raw'].to_dict("records"))
+            ]
+            training_cleaned_values = [
+                RowBasedValue(value, row_dict, column)
+                for value, row_dict in zip(training_data['clean'][column].values.tolist(), training_data['clean'].to_dict("records"))
+            ]
+            training_values = [
+                RowBasedValue(value, row_dict, column)
+                for value, row_dict in zip(training_data['raw'][column].values.tolist(), training_data['raw'].to_dict("records"))
+            ]
+            # Data Augmentation
+            temp_training_row_values = copy.deepcopy(row_values)
+            data, labels = self.generator.fit_transform(list(zip(training_cleaned_values, training_values)), temp_training_row_values)
+            outliers = self.detect_values(row_values, data, labels, training_data['constraints'])
+            result_df[column] = pd.Series(outliers)
         return result_df

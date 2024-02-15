@@ -6,3 +6,8 @@ xai
 cc.en.300.bin
 __pycache__/
 checkpoints
+Quintet
+result_ch_inp_dim
+result_ch_inp_dim_2
+Quintet_movies
+test.py
